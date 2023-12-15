@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafio Navideño</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <h1 class="text-center">Adivinanza Navideña</h1>
+        <div class="container">
+            <h3 class="text-center">Ingrese la cantidad de veces que cree que aparece el personaje</h3>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-sizing-default">Cantidad</span>
+                <input type="text" class="form-control" aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-default" id="guessCount" readonly>
+            </div>
+            <h4 class="text-center">Emoji a elegir</h4>
+            <div class="btn-group" role="group" aria-label="grupo de botones">
+                <button class="btn btn-outline-info" type="button"
+                    onclick="startGame('⭐')">⭐ Estrella</button>
+                <button class="btn btn-outline-info" type="button"
+                    onclick="startGame('🎅')">🎅 Papa Noel</button>
+                <button class="btn btn-outline-info" type="button"
+                    onclick="startGame('🎄')">🎄 Arbol</button>
+                <button class="btn btn-outline-info" type="button"
+                    onclick="startGame('🎁')">🎁 Regalo</button>
+            </div>
+            <hr>
+            <div class="container text-center">
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- Matriz 4x4 -->
+                                <p id="emojiDisplay" class="lead">?</p>
+                                <table id="emojiGrid" class="table table-bordered">
+
+                                </table>
+                                <!-- Fin Matriz 4x4 -->
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="col">
+                        <div class="card" style="width: 18rem;">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Elegido
+                                    <input type="text" id="selectedEmoji" readonly>
+                                </li>
+                                <li class="list-group-item">Cantidad
+                                    <input type="text" id="foundCount" readonly>
+                                </li>
+                                <li class="list-group-item">Encontrados
+                                    <input type="text" id="foundCount" readonly>
+                                </li>
+                                <li class="list-group-item">Resultado
+                                    <input type="text" id="result" readonly>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="d-grid gap-2 col-6 mx-auto">
+                <button class="btn btn-warning" type="reset" onclick="resetGame()">Reiniciar</button>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Script y funciones -->
+    <script>
+        function getRandomEmoji() {
+            const emojis = ["⭐", "🎄", "🎅", "🎁"];
+            const randomIndex = Math.floor(Math.random() * emojis.length);
+            return emojis[randomIndex];
+        }
+
+        function fillEmojiGrid() {
+            const grid = document.getElementById("emojiGrid");
+            grid.innerHTML = "";
+
+            for (let i = 0; i < 4; i++) {
+                const row = grid.insertRow(i);
+                for (let j = 0; j < 4; j++) {
+                    const cell = row.insertCell(j);
+                    cell.classList.add("text-center");
+                    cell.textContent = getRandomEmoji();
+                }
+            }
+        }
+
+        function startGame(emoji) {
+            const guessCount = parseInt(prompt("Ingrese la cantidad de veces que cree que aparece el emoji"), 10);
+
+            document.getElementById("selectedEmoji").value = emoji;
+            document.getElementById("guessCount").value = guessCount;
+            document.getElementById("foundCount").value = guessCount;
+            document.getElementById("result").value = "";
+            const randomEmoji = getRandomEmoji();
+            document.getElementById("emojiDisplay").textContent = `Emoji aleatorio: ${randomEmoji}`;
+            fillEmojiGrid();
+
+            // Devolver los valores
+            return {
+                guessCount: document.getElementById("guessCount"),
+                foundCount: document.getElementById("foundCount"),
+                result: document.getElementById("result"),
+                randomEmoji: randomEmoji
+            };
+        }
+
+        function checkGuess() {
+            const selectedEmoji = document.getElementById("selectedEmoji").value;
+            const guessCount = parseInt(document.getElementById("guessCount").value, 10);
+
+            let count = 0;
+            const grid = document.getElementById("emojiGrid");
+
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 4; j++) {
+                    const cell = grid.rows[i].cells[j];
+                    if (cell.textContent === selectedEmoji) {
+                        count++;
+                    }
+                }
+            }
+
+            document.getElementById("foundCount").value = count ===foundCount;
+            document.getElementById("result").value = count === guessCount ? "¡Correcto!" : "Incorrecto";
+
+            // Evitar que el formulario se envíe
+            return false;
+        }
+
+        function resetGame() {
+            document.getElementById("selectedEmoji").value = "";
+            document.getElementById("guessCount").value = "";
+            document.getElementById("foundCount").value = "";
+            document.getElementById("result").value = "";
+            document.getElementById("emojiDisplay").textContent = "?";
+            fillEmojiGrid();
+        }
+
+        fillEmojiGrid();
+    </script>
+</body>
+
+</html>
